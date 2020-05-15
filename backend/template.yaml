@@ -13,6 +13,28 @@ Globals:
     Timeout: 10
 
 Resources:
+  DynamodbTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: type
+          AttributeType: S
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: type
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1 
+      TableName: !Sub "url-shortner-${Stage}"
+      Tags:
+        - Key: stage
+          Value: 
+            Ref: Stage
+
   ApiGatewayApi:
     Type: AWS::Serverless::Api
     Properties:
@@ -25,6 +47,10 @@ Resources:
       CodeUri: src/generate_url/
       Handler: app.index
       Runtime: python3.8
+      Environment:
+        Variables:
+          DYNAMODB_TABLE:
+            Ref: DynamodbTable
       Events:
         GenerateShourtUrlApi:
           Type: Api
@@ -34,7 +60,25 @@ Resources:
             RestApiId:
               Ref: ApiGatewayApi
 
+  ListShortUrlFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/list_urls/
+      Handler: app.index
+      Runtime: python3.8
+      Events:
+        GenerateShourtUrlApi:
+          Type: Api
+          Properties:
+            Path: /urls
+            Method: get
+            RestApiId:
+              Ref: ApiGatewayApi
+
 Outputs:
   ApiGatewayBaseUrl:
     Description: "API Gateway base url"
     Value: !Sub "https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}"
+  DynamoDBTableName:
+    Description: "Dynamodb Table Name"
+    Value: !Ref DynamodbTable
