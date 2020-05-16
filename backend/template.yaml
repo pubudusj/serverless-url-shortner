@@ -11,6 +11,8 @@ Parameters:
 Globals:
   Function:
     Timeout: 10
+  Api:
+    OpenApiVersion: 3.0.1
 
 Resources:
   DynamodbTable:
@@ -38,9 +40,16 @@ Resources:
   ApiGatewayApi:
     Type: AWS::Serverless::Api
     Properties:
-      StageName: 
-        Ref: Stage
-  
+      StageName: !Ref Stage
+      Models:
+        GenerateUrlModel:
+          type: object
+          required:
+            - url
+          properties:
+            url:
+              type: string
+
   GenerateShortUrlFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -51,29 +60,36 @@ Resources:
         Variables:
           DYNAMODB_TABLE:
             Ref: DynamodbTable
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName:
+              Ref: DynamodbTable
       Events:
         GenerateShourtUrlApi:
           Type: Api
           Properties:
             Path: /generate
             Method: post
+            RequestModel:
+              Model: GenerateUrlModel
+              Required: true              
             RestApiId:
               Ref: ApiGatewayApi
 
-  ListShortUrlFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: src/list_urls/
-      Handler: app.index
-      Runtime: python3.8
-      Events:
-        GenerateShourtUrlApi:
-          Type: Api
-          Properties:
-            Path: /urls
-            Method: get
-            RestApiId:
-              Ref: ApiGatewayApi
+  # ListShortUrlFunction:
+  #   Type: AWS::Serverless::Function
+  #   Properties:
+  #     CodeUri: src/list_urls/
+  #     Handler: app.index
+  #     Runtime: python3.8
+  #     Events:
+  #       GenerateShourtUrlApi:
+  #         Type: Api
+  #         Properties:
+  #           Path: /urls
+  #           Method: get
+  #           RestApiId:
+  #             Ref: ApiGatewayApi
 
 Outputs:
   ApiGatewayBaseUrl:
@@ -82,3 +98,4 @@ Outputs:
   DynamoDBTableName:
     Description: "Dynamodb Table Name"
     Value: !Ref DynamodbTable
+  
