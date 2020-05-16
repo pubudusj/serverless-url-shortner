@@ -41,6 +41,7 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: !Ref Stage
+      EndpointConfiguration: 'REGIONAL'
       Models:
         GenerateUrlModel:
           type: object
@@ -76,20 +77,28 @@ Resources:
             RestApiId:
               Ref: ApiGatewayApi
 
-  # ListShortUrlFunction:
-  #   Type: AWS::Serverless::Function
-  #   Properties:
-  #     CodeUri: src/list_urls/
-  #     Handler: app.index
-  #     Runtime: python3.8
-  #     Events:
-  #       GenerateShourtUrlApi:
-  #         Type: Api
-  #         Properties:
-  #           Path: /urls
-  #           Method: get
-  #           RestApiId:
-  #             Ref: ApiGatewayApi
+  ListShortUrlFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/list_urls/
+      Handler: app.index
+      Runtime: python3.8
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName:
+              Ref: DynamodbTable
+      Environment:
+        Variables:
+          DYNAMODB_TABLE:
+            Ref: DynamodbTable
+      Events:
+        GenerateShourtUrlApi:
+          Type: Api
+          Properties:
+            Path: /urls
+            Method: get
+            RestApiId:
+              Ref: ApiGatewayApi
 
 Outputs:
   ApiGatewayBaseUrl:
