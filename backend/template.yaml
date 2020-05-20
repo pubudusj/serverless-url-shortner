@@ -100,6 +100,29 @@ Resources:
             RestApiId:
               Ref: ApiGatewayApi
 
+  FindShortUrlFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/find_url/
+      Handler: app.index
+      Runtime: python3.8
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName:
+              Ref: DynamodbTable
+      Environment:
+        Variables:
+          DYNAMODB_TABLE:
+            Ref: DynamodbTable
+      Events:
+        FindShortUrlApi:
+          Type: Api
+          Properties:
+            Path: /s/{code}
+            Method: get
+            RestApiId:
+              Ref: ApiGatewayApi
+
 Outputs:
   ApiGatewayBaseUrl:
     Description: "API Gateway base url"
