@@ -21,11 +21,13 @@ class DecimalEncoder(json.JSONEncoder):
 def index(event, context):
     response = table.scan(
         FilterExpression=Key('type').eq('short-url'),
+        ProjectionExpression='link, pk',
         )
 
     data = []
-    for item in response['Items']:        data.append({
-            'url': item.get('url'),
+    for item in response['Items']:
+        data.append({
+            'url': item.get('link'),
             'short_code': item.get('pk')
         })
 

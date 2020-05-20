@@ -25,7 +25,7 @@ def index(event, context):
     input = {
         'pk': random_key,
         'type': 'short-url',
-        'url': reqestData['url'],
+        'link': reqestData['url'],
         'status': True,
         'event_time': int(time.time())
     }
