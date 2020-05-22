@@ -151,6 +151,27 @@ Resources:
             Topic:
               Ref: FindUrlSuccessNotification
 
+  UpdateCounterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/update_counter/
+      Handler: app.index
+      Runtime: python3.8
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName:
+              Ref: DynamodbTable
+      Environment:
+        Variables:
+          DYNAMODB_TABLE:
+            Ref: DynamodbTable
+      Events:
+        SnsNotifiaction:
+          Type: SNS
+          Properties:
+            Topic:
+              Ref: FindUrlSuccessNotification
+
 Outputs:
   ApiGatewayBaseUrl:
     Description: "API Gateway base url"
