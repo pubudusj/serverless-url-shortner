@@ -1,1 +1,2 @@
 backend/samconfig.toml
+backend/.aws-sam/*
