@@ -9,15 +9,15 @@ table = client.Table(os.getenv('DYNAMODB_TABLE'))
 
 def index(event, context):
     response = table.scan(
-        FilterExpression=Key('type').eq('short-url'),
-        ProjectionExpression='link, pk',
+        FilterExpression=Key('pk').begins_with('short_url#'),
+        ProjectionExpression='link, resource_value',
         )
 
     data = []
     for item in response['Items']:
         data.append({
             'url': item.get('link'),
-            'short_code': item.get('pk')
+            'short_code': item.get('resource_value')
         })
 
     return {

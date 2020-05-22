@@ -23,11 +23,12 @@ def index(event, context):
         }
 
     input = {
-        'pk': random_key,
+        'pk': 'short_url#' + random_key,
+        'timestamp': int(time.time()),
         'type': 'short-url',
+        'resource_value': random_key,
         'link': reqestData['url'],
-        'status': True,
-        'event_time': int(time.time())
+        'status': True
     }
     result = table.put_item(Item=input)
 

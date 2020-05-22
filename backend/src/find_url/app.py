@@ -2,6 +2,7 @@ import json
 import boto3
 import os
 import decimal
+import time
 from boto3.dynamodb.conditions import Key
 
 ddb_client = boto3.resource('dynamodb')
@@ -14,14 +15,15 @@ def index(event, context):
     
     response = table.query(
         Select='SPECIFIC_ATTRIBUTES',
-        KeyConditionExpression=Key('pk').eq(short_code),
+        KeyConditionExpression=Key('pk').eq('short_url#' + short_code),
         ProjectionExpression='link',
         )
     if (response['Items']):
         sns_client.publish(
             TargetArn=os.getenv('SNS_TOPIC'),
             Message=json.dumps({
-                'id': short_code
+                'id': short_code,
+                'timestamp': int(time.time())
             })
         )
 

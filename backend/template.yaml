@@ -21,12 +21,12 @@ Resources:
       AttributeDefinitions:
         - AttributeName: pk
           AttributeType: S
-        - AttributeName: type
-          AttributeType: S
+        - AttributeName: timestamp
+          AttributeType: N
       KeySchema:
         - AttributeName: pk
           KeyType: HASH
-        - AttributeName: type
+        - AttributeName: timestamp
           KeyType: RANGE
       ProvisionedThroughput:
         ReadCapacityUnits: 1
