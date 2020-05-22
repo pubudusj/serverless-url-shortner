@@ -110,10 +110,14 @@ Resources:
         - DynamoDBReadPolicy:
             TableName:
               Ref: DynamodbTable
+        - SNSPublishMessagePolicy:
+            TopicName: !GetAtt FindUrlSuccessNotification.TopicName
       Environment:
         Variables:
           DYNAMODB_TABLE:
             Ref: DynamodbTable
+          SNS_TOPIC:
+            Ref: FindUrlSuccessNotification
       Events:
         FindShortUrlApi:
           Type: Api
@@ -123,6 +127,30 @@ Resources:
             RestApiId:
               Ref: ApiGatewayApi
 
+  FindUrlSuccessNotification:
+    Type: AWS::SNS::Topic
+
+  UpdateStatsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/update_stats/
+      Handler: app.index
+      Runtime: python3.8
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName:
+              Ref: DynamodbTable
+      Environment:
+        Variables:
+          DYNAMODB_TABLE:
+            Ref: DynamodbTable
+      Events:
+        SnsNotifiaction:
+          Type: SNS
+          Properties:
+            Topic:
+              Ref: FindUrlSuccessNotification
+
 Outputs:
   ApiGatewayBaseUrl:
     Description: "API Gateway base url"
@@ -130,4 +158,10 @@ Outputs:
   DynamoDBTableName:
     Description: "Dynamodb Table Name"
     Value: !Ref DynamodbTable
+  FindUrlSuccessSNS:
+    Description: "Find Url success SNS"
+    Value: !Ref FindUrlSuccessNotification
+  FindUrlSuccessSNSTopicName:
+    Description: "Find Url success SNS topic name"
+    Value: !GetAtt FindUrlSuccessNotification.TopicName
   

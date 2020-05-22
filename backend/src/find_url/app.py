@@ -4,8 +4,9 @@ import os
 import decimal
 from boto3.dynamodb.conditions import Key
 
-client = boto3.resource('dynamodb')
-table = client.Table(os.getenv('DYNAMODB_TABLE'))
+ddb_client = boto3.resource('dynamodb')
+sns_client = boto3.client('sns')
+table = ddb_client.Table(os.getenv('DYNAMODB_TABLE'))
 
 def index(event, context):
     pathData = event['path'];
@@ -16,7 +17,14 @@ def index(event, context):
         KeyConditionExpression=Key('pk').eq(short_code),
         ProjectionExpression='link',
         )
-    if (response['Items']):        
+    if (response['Items']):
+        sns_client.publish(
+            TargetArn=os.getenv('SNS_TOPIC'),
+            Message=json.dumps({
+                'id': short_code
+            })
+        )
+
         return {
             "statusCode": 301,
             "headers": {
