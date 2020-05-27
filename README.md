@@ -1,1 +1,0 @@
-# serverless-url-shortner
