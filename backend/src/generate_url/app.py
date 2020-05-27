@@ -34,12 +34,16 @@ def index(event, context):
 
     output = {
         'url': reqestData['url'],
-        'key': random_key 
+        'short_code': random_key 
     }
 
     return {
         "statusCode": 200,
         "body": json.dumps(output),
+        "headers": {
+            'Content-Type': 'application/json', 
+            'Access-Control-Allow-Origin': '*'
+        }
     }
 
 
