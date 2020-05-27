@@ -50,6 +50,10 @@ Resources:
           properties:
             url:
               type: string
+      Cors:
+        AllowMethods: "'OPTIONS,POST,GET'"
+        AllowHeaders: "'Content-Type'"
+        AllowOrigin: "'*'"
 
   GenerateShortUrlFunction:
     Type: AWS::Serverless::Function
