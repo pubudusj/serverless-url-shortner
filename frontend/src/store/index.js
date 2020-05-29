@@ -12,7 +12,6 @@ export default new Vuex.Store({
   mutations: {
     fetchShortUrls(state, data) {
       state.short_urls = data;
-      console.log(state.short_urls)
     },
     addShortUrl(state, shortUrl) {
       state.short_urls.unshift(shortUrl);
@@ -37,7 +36,6 @@ export default new Vuex.Store({
       dispatch('setLoader', null)
     },
     setLoader({ commit }, value) {
-      console.log('herere')
       commit('updateLoader', value)
     }
   },

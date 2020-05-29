@@ -7,6 +7,7 @@
           <tr>
             <th class="text-left">URL</th>
             <th class="text-left">Short URL</th>
+            <th class="text-left"></th>
           </tr>
         </thead>
         <tbody>
@@ -16,6 +17,7 @@
           <tr v-for="item in short_urls" :key="item.name">
             <td>{{ item.url }}</td>
             <td><a target="_blank" :href="short_url_base_path + item.short_code">{{ item.short_code }}</a></td>
+            <td><router-link :to="{ name: 'Stats', params: { short_code: item.short_code }}">Stats > </router-link></td>
           </tr>
         </tbody>
       </template>
@@ -49,3 +51,9 @@
     }
   }
 </script>
+
+<style scoped>
+  a {
+    text-decoration: none;
+  }
+</style>

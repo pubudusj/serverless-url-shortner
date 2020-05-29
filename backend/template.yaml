@@ -176,6 +176,29 @@ Resources:
             Topic:
               Ref: FindUrlSuccessNotification
 
+  ListStatsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/list_stats/
+      Handler: app.index
+      Runtime: python3.8
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName:
+              Ref: DynamodbTable
+      Environment:
+        Variables:
+          DYNAMODB_TABLE:
+            Ref: DynamodbTable
+      Events:
+        GenerateShourtUrlApi:
+          Type: Api
+          Properties:
+            Path: /stats/{code}
+            Method: get
+            RestApiId:
+              Ref: ApiGatewayApi
+
 Outputs:
   ApiGatewayBaseUrl:
     Description: "API Gateway base url"
