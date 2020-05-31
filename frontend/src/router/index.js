@@ -9,12 +9,18 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    meta: {
+      title: 'Nested - About Page - Example App'
+    }
   },
   {
     path: '/stats/:short_code',
     name: 'Stats',
-    component: Stats
+    component: Stats,
+    meta: {
+      title: 'Stats'
+    }
   },
   {
     path: '/about',

@@ -3,6 +3,7 @@ import boto3
 import os
 import decimal
 from boto3.dynamodb.conditions import Key
+import datetime
 
 client = boto3.resource('dynamodb')
 table = client.Table(os.getenv('DYNAMODB_TABLE'))
@@ -17,11 +18,8 @@ class DecimalEncoder(json.JSONEncoder):
         return super(DecimalEncoder, self).default(o)
 
 def index(event, context):
-    print(event)
     pathData = event['path'];
-    short_code = pathData.split('/')[-1]
-
-    print(event['pathParameters']['code'])
+    short_code = event['pathParameters']['code']
 
     response = table.scan(
         FilterExpression=Key('pk').begins_with('stat#' + short_code) | Key('pk').begins_with('counter#' + short_code),
@@ -32,17 +30,17 @@ def index(event, context):
         }
     )
 
-    stats = []
+    stats = {}
     total_count = 0
     for item in response['Items']:
-        if (item.get('type') === 'counter'):
-            totalCount = item.get('visit_count')
+        if item.get('type') == 'counter':
+            total_count = item.get('visit_count')
         else:
-            stats.append({
-                'type': item.get('type'),
-                'timestamp': item.get('timestamp'),
-            })
-
+            visited_date = datetime.datetime.fromtimestamp(item.get('timestamp')).strftime('%d-%m-%Y');
+            if visited_date in stats:
+                stats[visited_date] += 1
+            else:
+                stats[visited_date] = 1
     return {
         "statusCode": 200,
         "body": json.dumps({ 'stats': stats, 'total_count': total_count }, cls=DecimalEncoder),

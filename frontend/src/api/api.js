@@ -20,7 +20,13 @@ const api = {
             .then(response => (resolve(response.data)))
         })
     },
-    
+    fetchStats(short_code) {
+        return new Promise((resolve) => {
+            axios
+            .get(process.env.VUE_APP_API_BASE_URL + 'stats/' + short_code)
+            .then(response => (resolve(response.data)))
+        })
+    },
 }
 
 export default api;

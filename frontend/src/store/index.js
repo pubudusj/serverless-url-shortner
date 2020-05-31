@@ -35,6 +35,16 @@ export default new Vuex.Store({
       else(console.error('Failed fetching urls'))
       dispatch('setLoader', null)
     },
+    async fetchStats({ dispatch }, short_url) {
+      dispatch('setLoader', 'Fetching...')
+      const result = await api.fetchStats(short_url)
+      if (result) {
+        dispatch('setLoader', null)
+        return result
+      }
+      else(console.error('Failed fetching stats'))
+      dispatch('setLoader', null)
+    },
     setLoader({ commit }, value) {
       commit('updateLoader', value)
     }
