@@ -36,7 +36,7 @@ def index(event, context):
         if item.get('type') == 'counter':
             total_count = item.get('visit_count')
         else:
-            visited_date = datetime.datetime.fromtimestamp(item.get('timestamp')).strftime('%d-%m-%Y');
+            visited_date = datetime.datetime.fromtimestamp(item.get('timestamp')).strftime('%Y-%m-%d');
             if visited_date in stats:
                 stats[visited_date] += 1
             else:

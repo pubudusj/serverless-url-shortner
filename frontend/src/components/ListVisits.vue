@@ -36,9 +36,22 @@
         let self = this
         this.$store.dispatch('fetchStats', this.short_code)
           .then(function(data) {
-            console.log(data)
             self.total_visits = data.total_count
-            // self.chart_data = data.stats
+
+            // Arrange dates in between
+            let getAllDates = self.getDatesBetweenDates(Object.keys(data.stats)[0], Object.keys(data.stats)[Object.keys(data.stats).length - 1])
+            for (var i in getAllDates) {
+              let chartDate = getAllDates[i].toISOString().substring(0, 10)
+              if (chartDate in data.stats == true) {
+                self.chart_data.push(
+                  { "date": chartDate, "count": data.stats[chartDate] }
+                )
+              } else {
+                self.chart_data.push(
+                  { "date": chartDate, "count": 0 }
+                )
+              }
+            }
 
             for (var prop in data.stats) {
               self.chart_data.push(
@@ -70,6 +83,17 @@
         series.columns.template.strokeOpacity = 0;
         
         this.chart = chart
+      },
+      getDatesBetweenDates(startDate, endDate) {
+        let dates = []
+        const theDate = new Date(startDate)
+        while (theDate < new Date(endDate)) {
+          dates = [...dates, new Date(theDate)]
+          theDate.setDate(theDate.getDate() + 1)
+        }
+        dates = [...dates, new Date(endDate)]
+
+        return dates
       }
     },
     mounted() {
