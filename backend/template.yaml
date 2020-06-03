@@ -198,6 +198,32 @@ Resources:
             Method: get
             RestApiId:
               Ref: ApiGatewayApi
+  
+  FrontendWebSiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: 404.html
+
+  FrontendWebSiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      PolicyDocument:
+        Id: FrontendWebSiteBucketPolicy
+        Version: 2012-10-17
+        Statement:
+          - Sid: PublicReadForGetBucketObjects
+            Effect: Allow
+            Principal: '*'
+            Action: 's3:GetObject'
+            Resource: !Join 
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref FrontendWebSiteBucket
+                - /*
+      Bucket: !Ref FrontendWebSiteBucket
 
 Outputs:
   ApiGatewayBaseUrl:
@@ -212,4 +238,10 @@ Outputs:
   FindUrlSuccessSNSTopicName:
     Description: "Find Url success SNS topic name"
     Value: !GetAtt FindUrlSuccessNotification.TopicName
+  FrontendWebSiteBucket:
+    Value: !Ref FrontendWebSiteBucket
+    Description: Website hosted bucket name
+  PublicWebSiteURL:
+    Value: !GetAtt FrontendWebSiteBucket.WebsiteURL
+    Description: URL for website hosted on S3
   
