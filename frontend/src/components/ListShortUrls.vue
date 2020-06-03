@@ -33,7 +33,7 @@
 
     data () {
       return {
-        short_url_base_path: process.env.VUE_APP_SHORT_URL_BASE_PATH
+        short_url_base_path: process.env.VUE_APP_API_BASE_URL + 's/'
       }
     },
     methods:{

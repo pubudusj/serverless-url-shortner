@@ -24,7 +24,6 @@
 
     data () {
       return {
-        short_url_base_path: process.env.VUE_APP_SHORT_URL_BASE_PATH,
         short_code: this.$route.params.short_code,
         chart_data: [],
         total_visits: null
