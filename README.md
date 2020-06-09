@@ -65,7 +65,8 @@ aws cloudformation delete-stack --stack-name [StackName]
 ```
 
 ## Example screenshots
-
+Add and List short urls: 
 ![Add and List short urls](resources/url-shortner-add-list.png)
 
+Stats of a single short url:
 ![Stats of a single short url](resources/url-shortner-stats.png)
