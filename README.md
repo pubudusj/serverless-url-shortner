@@ -8,6 +8,8 @@
 
 Architecture is as follows:
 
+![Image of Architecture](resources/architecture.png)
+
 1. S3 web site hosting is used to host the frontend.
 2. API Gateway is used to communicate with backend.
 3. Generated short url will be saved in DynamoDB.
